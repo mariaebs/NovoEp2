@@ -119,3 +119,99 @@ def print_mapa(mapa, mostrar_navios=False):
                 print(mapa[i][j], end="  ")
         print()
 
+# funcao principal
+
+def jogo():
+    print(colorir_texto("╔-------------------------------------╗","green"))
+    print(colorir_texto("         <Batalha Naval Insper>        ","green"))
+    print(colorir_texto("╚-------------------------------------╝","green"))
+    print("Escolha uma nação: [escreva em extenso. ex:Japão]")
+    print("Opções:")
+    for pais in PAISES.keys():
+        print("-", pais)
+    nacao_jogador = input("Nação: ").strip().capitalize()
+
+    while nacao_jogador not in PAISES:
+        print("Opção inválida. Escolha outra.")
+        nacao_jogador = input("Nação: ").strip().capitalize()
+
+    blocos_jogador = list(PAISES[nacao_jogador].values())
+    mapa_jogador = cria_mapa(10)
+
+    print("Mapa do jogador:")
+    print_mapa(mapa_jogador, mostrar_navios=True)
+
+    for navio in blocos_jogador:
+        while True:
+            coordenada = input(f"Posição do navio {navio}: ").strip().upper()
+            if len(coordenada) != 2 or not coordenada[0].isalpha() or not coordenada[1:].isdigit():
+                print("Coordenada inválida. Digite novamente.")
+                continue
+            linha = ord(coordenada[0]) - ord('A')
+            coluna = int(coordenada[1:]) - 1
+
+            orientacao = input("Orientação do navio (h/v): ").strip().lower()
+            if orientacao not in ['h', 'v']:
+                print("Opção inválida. Escolha 'h' para horizontal ou 'v' para vertical.")
+                continue
+
+            if posicao_suporta(mapa_jogador, navio, linha, coluna, orientacao):
+                if orientacao == 'v':
+                    for i in range(linha, linha + navio):
+                        mapa_jogador[i][coluna] = 'N'
+                else:
+                    for j in range(coluna, coluna + navio):
+                        mapa_jogador[linha][j] = 'N'
+                break
+            else:
+                print("Posição inválida. Por favor, escolha outra.")
+
+        print("Mapa do jogador:")
+        print_mapa(mapa_jogador, mostrar_navios=True)
+
+    mapa_computador = cria_mapa(10)
+    blocos_computador = list(PAISES[random.choice(list(PAISES.keys()))].values())
+    aloca_navios(mapa_computador, blocos_computador)
+
+    while True:
+        print("Mapa do jogador:")
+        print_mapa(mapa_jogador)
+        print("\nMapa do computador:")
+        print_mapa(mapa_computador)
+
+        coordenada = input("Coordenada de ataque (ex: A1): ").strip().upper()
+        if len(coordenada) != 2 or not coordenada[0].isalpha() or not coordenada[1:].isdigit():
+            print("Coordenada inválida. Digite novamente.")
+            continue
+        linha = ord(coordenada[0]) - ord('A')
+        coluna = int(coordenada[1:]) - 1
+
+        if mapa_computador[linha][coluna] == 'N':
+            mapa_computador[linha][coluna] = 'X'
+            print("Você certou!")
+        else:
+            mapa_computador[linha][coluna] = 'O'
+            print("Você errou!")
+
+        if foi_derrotado(mapa_computador):
+            print("Você venceu!")
+            break
+
+        atk_computador = random.randint(0, 9)
+        atk_computador2 = random.randint(0, 9)
+
+        if mapa_jogador[atk_computador][atk_computador2] == 'N':
+            mapa_jogador[atk_computador][atk_computador2] = 'X'
+            print("O computador acertou!")
+        else:
+            mapa_jogador[atk_computador][atk_computador2] = 'O'
+            print("O computador errou!")
+
+        if foi_derrotado(mapa_jogador):
+            print("O computador venceu!")
+            break
+
+    jogar_novamente = input("Deseja jogar novamente? (s/n) ").strip().lower()
+    if jogar_novamente == 's':
+        jogo()
+
