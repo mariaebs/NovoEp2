@@ -1,5 +1,2 @@
-print ("hello,world.")
-print("alo")
-print("Acho que só agora entendi esse ngc")
-print("Vem dp:p")
-print("teste")
+def cria_mapa(n):
+    return [[" "]*n for i in range(n)]
