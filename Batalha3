@@ -47,4 +47,27 @@ def foi_derrotado (matriz):
                 return False
     return True
 
+# def print_mapa(mapa):
+#     print("A B C D E F G H I J")
+#     i=1
+#     for i in mapa:
+#         print("%d|%s|" % (i,"|".join(i)))
+#         i+=1
 
+
+def print_battlefield(mapa):
+    # Imprime o cabeçalho do mapa de batalha
+    print("  A   B   C   D   E   F   G   H   I   J")
+    print(" " + "-" * 40)
+
+    # Itera sobre cada linha e coluna da matriz de batalha
+    for i in range(len(mapa)):
+        print(f"{i + 1} " + ' | '.join(mapa[i]))
+
+    # Imprime a linha inferior do mapa de batalha
+    print(" " + "-" * 40)
+    return print
+
+mapasla= cria_mapa(10)
+
+print(print_battlefield(mapasla))
