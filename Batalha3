@@ -1,6 +1,64 @@
+import random
+
+PAISES = {
+    'Brasil': {
+        'cruzador': 1,
+        'torpedeiro': 2,
+        'destroyer': 1,
+        'couracado': 1,
+        'porta-avioes': 1
+    },
+    'França': {
+        'cruzador': 3,
+        'porta-avioes': 1,
+        'destroyer': 1,
+        'submarino': 1,
+        'couracado': 1
+    },
+    'Austrália': {
+        'couracado': 1,
+        'cruzador': 3,
+        'submarino': 1,
+        'porta-avioes': 1,
+        'torpedeiro': 1
+    },
+    'Rússia': {
+        'cruzador': 1,
+        'porta-avioes': 1,
+        'couracado': 2,
+        'destroyer': 1,
+        'submarino': 1
+    },
+    'Japão': {
+        'torpedeiro': 2,
+        'cruzador': 1,
+        'destroyer': 2,
+        'couracado': 1,
+        'submarino': 1
+    }
+}
+
+CORES = {
+    'reset': '\u001b[0m',
+    'red': '\u001b[31m',
+    'black': '\u001b[30m',
+    'green': '\u001b[32m',
+    'yellow': '\u001b[33m',
+    'blue': '\u001b[34m',
+    'magenta': '\u001b[35m',
+    'cyan': '\u001b[36m',
+    'white': '\u001b[37m'
+}
+
+def colorir_texto(texto, cor):
+    cor_codigo = CORES.get(cor.lower())
+    if cor_codigo:
+        return cor_codigo + texto + CORES['reset']
+    else:
+        return texto
+
 def cria_mapa(n):
     return [[" "]*n for i in range(n)]
-
 
 def posicao_suporta(mapa, blocos, linha, coluna, orientacao):
     if linha < 0 or coluna < 0 or linha >= len(mapa) or coluna >= len(mapa):
@@ -13,9 +71,9 @@ def posicao_suporta(mapa, blocos, linha, coluna, orientacao):
         for i in range(linha, linha + blocos):
             if mapa[i][coluna] != ' ':
                 return False
-    elif coluna + blocos > len(mapa):
-        return False
     else:
+        if coluna + blocos > len(mapa):
+            return False
         for j in range(coluna, coluna + blocos):
             if mapa[linha][j] != ' ':
                 return False
@@ -39,35 +97,25 @@ def aloca_navios(mapa, blocos):
                 alocando_navio = True
     return mapa
 
-
-def foi_derrotado (matriz):
+def foi_derrotado(matriz):
     for linha in matriz:
         for elem in linha:
-            if elem=="N":
+            if elem == "N":
                 return False
     return True
 
-# def print_mapa(mapa):
-#     print("A B C D E F G H I J")
-#     i=1
-#     for i in mapa:
-#         print("%d|%s|" % (i,"|".join(i)))
-#         i+=1
+def print_mapa(mapa, mostrar_navios=False):
+    n = len(mapa)
+    print(" ", end="")
+    for i in range(n):
+        print(f"{i+1:2}", end=" ")
+    print()
+    for i in range(n):
+        print(f"{chr(65 + i)} ", end="")
+        for j in range(n):
+            if not mostrar_navios and mapa[i][j] == 'N':
+                print(" ", end=" ")
+            else:
+                print(mapa[i][j], end="  ")
+        print()
 
-
-def print_battlefield(mapa):
-    # Imprime o cabeçalho do mapa de batalha
-    print("  A   B   C   D   E   F   G   H   I   J")
-    print(" " + "-" * 40)
-
-    # Itera sobre cada linha e coluna da matriz de batalha
-    for i in range(len(mapa)):
-        print(f"{i + 1} " + ' | '.join(mapa[i]))
-
-    # Imprime a linha inferior do mapa de batalha
-    print(" " + "-" * 40)
-    return print
-
-mapasla= cria_mapa(10)
-
-print(print_battlefield(mapasla))
