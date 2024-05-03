@@ -121,6 +121,28 @@ def print_mapa(mapa, mostrar_navios=False):
                 print(mapa[i][j], end="  ")
         print()
 
+def print_mapas_lado_a_lado(mapa1, mapa2):
+    n = len(mapa1)
+    print(" ", end="")
+    for i in range(n):
+        print(f"{i+1:2}", end=" ")
+    print("         ", end="")
+    for i in range(n):
+        print(f"{i+1:2}", end=" ")
+    print()
+    for i in range(n):
+        print(f"{ALFABETO[i]} ", end="")
+        for j in range(n):
+            print(mapa1[i][j], end="  ")
+        print("       ", end="")
+        print(f"{ALFABETO[i]} ", end="")
+        for j in range(n):
+            if mapa2[i][j] == 'N':
+                print(" ", end=" ")
+            else:
+                print(mapa2[i][j], end="  ")
+        print()
+
 # funcao principal
 
 def jogo():
@@ -142,6 +164,10 @@ def jogo():
 
     print("Mapa do jogador:")
     print_mapa(mapa_jogador, mostrar_navios=True)
+
+    # Contagem inicial de navios
+    total_navios_jogador = sum(blocos_jogador)
+    navios_afundados_jogador = 0
 
     for navio in blocos_jogador:
         while True:
@@ -175,11 +201,12 @@ def jogo():
     blocos_computador = list(PAISES[random.choice(list(PAISES.keys()))].values())
     aloca_navios(mapa_computador, blocos_computador)
 
+    # Contagem inicial de navios do computador
+    total_navios_computador = sum(blocos_computador)
+    navios_afundados_computador = 0
+
     while True:
-        print("Mapa do jogador:")
-        print_mapa(mapa_jogador)
-        print("\nMapa do computador:")
-        print_mapa(mapa_computador)
+        print_mapas_lado_a_lado(mapa_jogador, mapa_computador)
 
         linha = input("Escolha uma linha para atacar: ").strip().upper()
         coluna = input("Escolha uma coluna para atacar (1-10): ")
@@ -192,9 +219,14 @@ def jogo():
         if mapa_computador[linha][coluna] == 'N':
             mapa_computador[linha][coluna] = 'X'
             print("Você acertou!")
+            navios_afundados_computador += 1
         else:
             mapa_computador[linha][coluna] = 'O'
             print("Você errou!")
+
+        # Mensagem de quantos navios ainda estão no jogo
+        navios_restantes_computador = total_navios_computador - navios_afundados_computador
+        print(f"Ainda faltam {navios_restantes_computador} navios para afundar o computador.")
 
         if foi_derrotado(mapa_computador):
             print("Você venceu!")
@@ -206,9 +238,14 @@ def jogo():
         if mapa_jogador[atk_computador][atk_computador2] == 'N':
             mapa_jogador[atk_computador][atk_computador2] = 'X'
             print("O computador acertou!")
+            navios_afundados_jogador += 1
         else:
             mapa_jogador[atk_computador][atk_computador2] = 'O'
             print("O computador errou!")
+
+        # Mensagem de quantos navios ainda estão no jogo
+        navios_restantes_jogador = total_navios_jogador - navios_afundados_jogador
+        print(f"Ainda faltam {navios_restantes_jogador} navios para você afundar.")
 
         if foi_derrotado(mapa_jogador):
             print("O computador venceu!")
