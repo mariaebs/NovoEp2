@@ -50,6 +50,8 @@ CORES = {
     'white': '\u001b[37m'
 }
 
+ALFABETO = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+
 def colorir_texto(texto, cor):
     cor_codigo = CORES.get(cor.lower())
     if cor_codigo:
@@ -111,7 +113,7 @@ def print_mapa(mapa, mostrar_navios=False):
         print(f"{i+1:2}", end=" ")
     print()
     for i in range(n):
-        print(f"{chr(65 + i)} ", end="")
+        print(f"{ALFABETO[i]} ", end="")
         for j in range(n):
             if not mostrar_navios and mapa[i][j] == 'N':
                 print(" ", end=" ")
@@ -143,13 +145,13 @@ def jogo():
 
     for navio in blocos_jogador:
         while True:
-            coordenada = input(f"Posição do navio {navio}: ").strip().upper()
-            if len(coordenada) != 2 or not coordenada[0].isalpha() or not coordenada[1:].isdigit():
-                print("Coordenada inválida. Digite novamente.")
+            linha = input("Escolha uma linha: ").strip().upper()
+            coluna = input("Escolha uma coluna (1-10): ")
+            if linha not in ALFABETO or not coluna.isdigit() or int(coluna) < 1 or int(coluna) > 10:
+                print("Coordenadas inválidas. Digite novamente.")
                 continue
-            linha = ord(coordenada[0]) - ord('A')
-            coluna = int(coordenada[1:]) - 1
-
+            linha = ord(linha) - ord('A')
+            coluna = int(coluna) - 1
             orientacao = input("Orientação do navio (h/v): ").strip().lower()
             if orientacao not in ['h', 'v']:
                 print("Opção inválida. Escolha 'h' para horizontal ou 'v' para vertical.")
@@ -179,16 +181,17 @@ def jogo():
         print("\nMapa do computador:")
         print_mapa(mapa_computador)
 
-        coordenada = input("Coordenada de ataque (ex: A1): ").strip().upper()
-        if len(coordenada) != 2 or not coordenada[0].isalpha() or not coordenada[1:].isdigit():
-            print("Coordenada inválida. Digite novamente.")
+        linha = input("Escolha uma linha para atacar: ").strip().upper()
+        coluna = input("Escolha uma coluna para atacar (1-10): ")
+        if linha not in ALFABETO or not coluna.isdigit() or int(coluna) < 1 or int(coluna) > 10:
+            print("Coordenadas inválidas. Digite novamente.")
             continue
-        linha = ord(coordenada[0]) - ord('A')
-        coluna = int(coordenada[1:]) - 1
+        linha = ord(linha) - ord('A')
+        coluna = int(coluna) - 1
 
         if mapa_computador[linha][coluna] == 'N':
             mapa_computador[linha][coluna] = 'X'
-            print("Você certou!")
+            print("Você acertou!")
         else:
             mapa_computador[linha][coluna] = 'O'
             print("Você errou!")
@@ -215,3 +218,4 @@ def jogo():
     if jogar_novamente == 's':
         jogo()
 
+jogo()
